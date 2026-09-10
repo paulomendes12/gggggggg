@@ -55,7 +55,7 @@ const products = [
     id: 3,
     title: "Camisa de Linho Off-White Manga Longa",
     category: "Camisas",
-    priceNumber: 0,
+    priceNumber: 229.90,
     images: [
       "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80"
     ],
@@ -66,7 +66,7 @@ const products = [
   },
   {
     id: 4,
-    title: "asdasdasdada",
+    title: "Bolsa Minimalista Leather Structured",
     category: "Bolsas",
     priceNumber: 419.90,
     images: [
@@ -74,5 +74,17 @@ const products = [
     ],
     description: "Bolsa em couro ecológico de alta durabilidade.",
     variations: {}
-  }
+   },
+  {
+    id: 5,
+    title: "Iphone 13",
+    category: "Bolsas",
+    priceNumber: VENDIDO,
+    images: [
+      "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcS7vx6RQnvVjiaqWUfJFR_zTZJbxVttcezlM6Khw40JuABt3BfsLbIwFEUue2BPjkVOY_4Ox2BM0BjgTRH9iE0Mbpc7NxuwRbg0egxBE10WS4SSElL5cdih"
+      "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcROLCe21YwyNF-T0ucSvjmiPlGy9yIT-3CbVTw7qvpCN1KIHSNHIM6F_Z3fws-L19fYz1KsQh28HK6KxGEizDLKiHKqpKQ_Ig"
+    ],
+    description: "IHONE DE ETESTE, verificando se o site está funcionando",
+    variations: {}
+}
 ];

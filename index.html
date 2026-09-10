@@ -28,6 +28,60 @@
     })();
   </script>
 
+
+<!-- LUMINA_RUNTIME_GUARD_V4: runtime recovery only; no visual/layout changes -->
+<script>
+(function(){
+  "use strict";
+  // Prevent an exception during optional initialization from leaving the splash screen forever.
+  window.addEventListener("error", function(e){
+    try {
+      var splash = document.querySelector(".loading-screen, #loading-screen, #loader, .loader-screen, .loading");
+      if (splash && getComputedStyle(splash).display !== "none") {
+        // Only recover if the page has been waiting unusually long.
+        setTimeout(function(){
+          try {
+            splash.style.display = "none";
+            splash.setAttribute("aria-hidden","true");
+          } catch(_) {}
+        }, 8000);
+      }
+    } catch(_) {}
+  });
+
+  window.addEventListener("unhandledrejection", function(){
+    try {
+      var splash = document.querySelector(".loading-screen, #loading-screen, #loader, .loader-screen, .loading");
+      if (splash) {
+        setTimeout(function(){
+          try {
+            splash.style.display = "none";
+            splash.setAttribute("aria-hidden","true");
+          } catch(_) {}
+        }, 8000);
+      }
+    } catch(_) {}
+  });
+
+  // Keep localStorage operations from breaking the application if browser storage is unavailable.
+  try {
+    var testKey="__lumina_storage_test__";
+    localStorage.setItem(testKey,"1");
+    localStorage.removeItem(testKey);
+  } catch(_) {
+    try {
+      var memStore={};
+      window.localStorage = {
+        getItem:function(k){return Object.prototype.hasOwnProperty.call(memStore,k)?memStore[k]:null;},
+        setItem:function(k,v){memStore[k]=String(v);},
+        removeItem:function(k){delete memStore[k];},
+        clear:function(){memStore={};}
+      };
+    } catch(_) {}
+  }
+})();
+</script>
+
 </head>
 
 <body>

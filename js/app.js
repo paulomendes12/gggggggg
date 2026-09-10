@@ -54,15 +54,14 @@
     -------------------------------------------------- */
 
     function formatCurrency(val) {
-
-      return val.toLocaleString(
+      const number = Number(val);
+      return (Number.isFinite(number) ? number : 0).toLocaleString(
         "pt-BR",
         {
           style: "currency",
           currency: "BRL"
         }
       );
-
     }
 
     /* --------------------------------------------------
@@ -320,9 +319,12 @@
             selectedCategory === "Todas" ||
             p.category === selectedCategory;
 
+          const title = String(p.title || "").toLowerCase();
+          const description = String(p.description || "").toLowerCase();
+
           const matchesSearch =
-            p.title.toLowerCase().includes(query) ||
-            p.description.toLowerCase().includes(query);
+            title.includes(query) ||
+            description.includes(query);
 
           return matchesCategory &&
                  matchesSearch;
@@ -474,7 +476,9 @@
     }
 
     function getCartVariantKey(item) {
-      if (item?.variantKey) return item.variantKey;
+      if (item && typeof item.variantKey === "string" && item.variantKey) {
+        return item.variantKey;
+      }
       if (item?.size) return `Tamanho=${item.size}`;
       return "";
     }
@@ -748,7 +752,7 @@
 
       if (index > -1) {
 
-        cart[index].qty += delta;
+        cart[index].qty = (Number(cart[index].qty) || 1) + delta;
 
         if (cart[index].qty <= 0) {
 
@@ -853,9 +857,9 @@
       cartBody.innerHTML =
         cart.map(item => {
 
-          const itemSubtotal =
-            item.priceNumber *
-            item.qty;
+          const unitPrice = Number(item.priceNumber) || 0;
+          const quantity = Math.max(1, Number(item.qty) || 1);
+          const itemSubtotal = unitPrice * quantity;
 
           total += itemSubtotal;
 
@@ -880,7 +884,7 @@
 
                 <div class="cart-item-unit-price">
                   Unitário:
-                  ${formatCurrency(item.priceNumber)}
+                  ${formatCurrency(unitPrice)}
                 </div>
 
                 <div class="cart-item-subtotal">
@@ -917,7 +921,7 @@
                   </button>
 
                   <span class="qty-number">
-                    ${item.qty}
+                    ${quantity}
                   </span>
 
                   <button
@@ -1192,10 +1196,7 @@
         cart.reduce(
           (acc, i) =>
             acc +
-            (
-              i.priceNumber *
-              i.qty
-            ),
+            ((Number(i.priceNumber) || 0) * (Number(i.qty) || 0)),
           0
         );
 
@@ -1217,7 +1218,7 @@
           `- ${item.title}${item.variantLabel ? ` (${item.variantLabel})` : ""}\n`;
 
         text +=
-          `  ${item.qty}x ${formatCurrency(item.priceNumber)} = ${formatCurrency(item.priceNumber * item.qty)}\n`;
+          `  ${Number(item.qty) || 0}x ${formatCurrency(item.priceNumber)} = ${formatCurrency((Number(item.priceNumber) || 0) * (Number(item.qty) || 0))}\n`;
 
       });
 
@@ -1583,8 +1584,14 @@
        INICIALIZAÇÃO
     -------------------------------------------------- */
 
-    renderProducts(products);
-    refreshSharedUI();
+    try {
+      renderProducts(products);
+      refreshSharedUI();
+    } catch (error) {
+      console.error("LUMINA: erro na inicialização da interface.", error);
+      const loader = document.getElementById("appLoadingScreen");
+      if (loader) loader.classList.add("hidden");
+    }
 
     // Libera a interface depois que o conteúdo inicial foi preparado.
     window.addEventListener("load", () => {

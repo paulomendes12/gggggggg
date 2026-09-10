@@ -74,31 +74,5 @@ const products = [
     ],
     description: "Bolsa em couro ecológico de alta durabilidade.",
     variations: {}
-   },
-  {
-    id: 5,
-    title: "Iphone 13",
-    category: "Bolsas",
-    priceNumber: VENDIDO,
-    images: [
-      "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcS7vx6RQnvVjiaqWUfJFR_zTZJbxVttcezlM6Khw40JuABt3BfsLbIwFEUue2BPjkVOY_4Ox2BM0BjgTRH9iE0Mbpc7NxuwRbg0egxBE10WS4SSElL5cdih"
-      "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcROLCe21YwyNF-T0ucSvjmiPlGy9yIT-3CbVTw7qvpCN1KIHSNHIM6F_Z3fws-L19fYz1KsQh28HK6KxGEizDLKiHKqpKQ_Ig"
-    ],
-    description: "IHONE DE ETESTE, verificando se o site está funcionando",
-    variations: {}
-     {
-    id: 8,
-    title: "Tênis LUMINA",
-    category: "Calçados",
-    priceNumber: 299.90,
-    images: ["URL-DA-IMAGEM"],
-    description: "Tênis casual.",
-    variations: {
-    "Tamanho": ["38", "39", "40", "41"],
-    "Cor": ["Preto", "Branco"]
-  },
-    variantPrices: {
-    "Cor=Branco|Tamanho=40": 319.90,
-    "Cor=Preto|Tamanho=41": 329.90
-}
+  }
 ];

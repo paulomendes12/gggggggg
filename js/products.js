@@ -86,5 +86,19 @@ const products = [
     ],
     description: "IHONE DE ETESTE, verificando se o site está funcionando",
     variations: {}
+     {
+    id: 8,
+    title: "Tênis LUMINA",
+    category: "Calçados",
+    priceNumber: 299.90,
+    images: ["URL-DA-IMAGEM"],
+    description: "Tênis casual.",
+    variations: {
+    "Tamanho": ["38", "39", "40", "41"],
+    "Cor": ["Preto", "Branco"]
+  },
+    variantPrices: {
+    "Cor=Branco|Tamanho=40": 319.90,
+    "Cor=Preto|Tamanho=41": 329.90
 }
 ];

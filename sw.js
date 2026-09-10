@@ -1,4 +1,4 @@
-const CACHE_NAME = "lumina-shell-v3";
+const CACHE_NAME = "lumina-shell-v4";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./css/style.css", "./js/products.js", "./js/state.js", "./js/app.js", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {

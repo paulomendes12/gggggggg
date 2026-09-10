@@ -11,6 +11,23 @@
 
   <link rel="stylesheet" href="css/style.css" />
 
+  <!-- Fallback de segurança: evita tela de carregamento infinita mesmo se algum recurso JavaScript falhar. -->
+  <script>
+    (function () {
+      function releaseLoader() {
+        var loader = document.getElementById("appLoadingScreen");
+        if (loader) loader.classList.add("hidden");
+      }
+      window.addEventListener("DOMContentLoaded", function () {
+        setTimeout(releaseLoader, 1800);
+      }, { once: true });
+      window.addEventListener("error", function () {
+        setTimeout(releaseLoader, 300);
+      });
+      setTimeout(releaseLoader, 3500);
+    })();
+  </script>
+
 </head>
 
 <body>

@@ -10,15 +10,9 @@
       user: "luminaUser"
     };
 
-    let luminaChannel = null;
-    try {
-      if ("BroadcastChannel" in window) {
-        luminaChannel = new BroadcastChannel("lumina-sync");
-      }
-    } catch (error) {
-      console.warn("LUMINA: sincronização entre abas indisponível.", error);
-      luminaChannel = null;
-    }
+    const luminaChannel = "BroadcastChannel" in window
+      ? new BroadcastChannel("lumina-sync")
+      : null;
 
     function readJSON(key, fallback) {
       try {
@@ -30,11 +24,8 @@
       }
     }
 
-    // Garante que dados antigos/corrompidos nunca impeçam a inicialização.
     let cart = readJSON(LUMINA_STORAGE.cart, []);
     let favorites = readJSON(LUMINA_STORAGE.favorites, []);
-    if (!Array.isArray(cart)) cart = [];
-    if (!Array.isArray(favorites)) favorites = [];
 
     function persistSharedState(source = "local") {
       localStorage.setItem(LUMINA_STORAGE.cart, JSON.stringify(cart));

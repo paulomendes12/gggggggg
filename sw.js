@@ -1,5 +1,5 @@
-const CACHE_NAME = "lumina-v5-0-1";
-const APP_SHELL = ["./", "./index.html", "./manifest.json", "./css/style.css", "./js/products.js", "./js/state.js", "./js/app.js", "./icon-192.png", "./icon-512.png"];
+const CACHE_NAME = "lumina-v5-0-2";
+const APP_SHELL = ["./", "./index.html", "./manifest.json", "./css/style.css", "./js/config.js", "./js/products.js", "./js/state.js", "./js/app.js", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {
   event.waitUntil(

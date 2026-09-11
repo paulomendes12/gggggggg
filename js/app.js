@@ -1599,7 +1599,7 @@
        NOTIFICAÇÃO DE ATUALIZAÇÃO — SEM LOGIN
     -------------------------------------------------- */
     // Altere SOMENTE este número quando publicar uma nova versão.
-    const LUMINA_SITE_VERSION = "5.0.1";
+    const LUMINA_SITE_VERSION = "5.0.2";
     const LUMINA_UPDATE_KEY = "luminaLastSeenVersion";
     const LUMINA_UPDATE_UNREAD_KEY = "luminaUpdateUnread";
 
@@ -1714,6 +1714,40 @@
         button.style.display = "none";
       }
     }
+
+    /* --------------------------------------------------
+       REDES SOCIAIS
+       Os mesmos links são usados no Perfil e no rodapé.
+    -------------------------------------------------- */
+    function applySocialLinks() {
+      const links = window.LUMINA_SOCIAL_LINKS || {};
+      const mapping = {
+        instagram: ["profileInstagramLink", "footerInstagramLink"],
+        tiktok: ["profileTikTokLink", "footerTikTokLink"],
+        pinterest: ["profilePinterestLink", "footerPinterestLink"]
+      };
+
+      Object.entries(mapping).forEach(([network, ids]) => {
+        const url = typeof links[network] === "string" ? links[network].trim() : "";
+        ids.forEach(id => {
+          const element = document.getElementById(id);
+          if (!element) return;
+          if (url) {
+            element.href = url;
+            element.target = "_blank";
+            element.rel = "noopener noreferrer";
+            element.removeAttribute("aria-disabled");
+          } else {
+            element.removeAttribute("href");
+            element.removeAttribute("target");
+            element.removeAttribute("rel");
+            element.setAttribute("aria-disabled", "true");
+          }
+        });
+      });
+    }
+
+    applySocialLinks();
 
     /* --------------------------------------------------
        SERVICE WORKER

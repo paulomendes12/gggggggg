@@ -1,111 +1,149 @@
-# LUMINA — Guia rápido de edição
+# LUMINA V5 — Guia rápido de edição
 
-## Estrutura
+## 1. Adicionar produto
 
-- `index.html` — estrutura das telas, modais e componentes.
-- `css/style.css` — todo o visual atual.
-- `js/products.js` — **catálogo de produtos**. É o arquivo principal para adicionar, remover ou editar produtos e suas variações.
-- `js/state.js` — estado compartilhado entre abas/janelas (sacola, favoritos e usuário).
-- `js/app.js` — funções e comportamento da aplicação.
-- `manifest.json` — configuração do aplicativo/PWA.
-- `sw.js` — Service Worker e cache do aplicativo.
+Edite somente `js/products.js`.
 
-## Adicionar um produto sem variações
+Modelo simples:
 
 ```js
 {
   id: 5,
   title: "Bolsa Minimalista",
   category: "Bolsas",
+  status: "disponivel",
   priceNumber: 199.90,
   images: [
-    "URL-DA-IMAGEM"
+    "https://endereco-da-imagem.jpg"
   ],
   description: "Descrição do produto.",
   variations: {}
 }
 ```
 
-## Produto com tamanho
+### Produto vendido ou sem estoque
+
+Use:
 
 ```js
-{
-  id: 6,
-  title: "Camiseta Premium",
-  category: "Camisas",
-  priceNumber: 99.90,
-  images: ["URL-DA-IMAGEM"],
-  description: "Camiseta de algodão.",
-  variations: {
-    "Tamanho": ["P", "M", "G", "GG"]
-  }
+status: "vendido"
+```
+
+ou:
+
+```js
+status: "sem-estoque"
+```
+
+Quando um desses status estiver ativo:
+- o preço não aparece no card;
+- aparece `Vendido` ou `Sem estoque`;
+- o botão da sacola fica bloqueado;
+- o cliente não consegue adicionar o item ao carrinho.
+
+Para voltar a vender, troque para:
+
+```js
+status: "disponivel"
+```
+
+### Atenção ao cadastrar
+
+- Cada produto precisa de um `id` diferente.
+- `priceNumber` é número: `419.90`, sem `R$`.
+- `images` precisa ser uma lista, mesmo com uma imagem.
+- Separe os produtos com vírgula.
+- Não apague a vírgula entre produtos.
+- Não coloque duas propriedades com o mesmo nome.
+- Uma URL de imagem deve estar entre aspas.
+
+## 2. Sem variações
+
+```js
+variations: {}
+```
+
+## 3. Com tamanho
+
+```js
+variations: {
+  "Tamanho": ["P", "M", "G", "GG"]
 }
 ```
 
-## Produto com tamanho e cor
+## 4. Com tamanho e cor
 
 ```js
-{
-  id: 7,
-  title: "Vestido Elegance",
-  category: "Vestidos",
-  priceNumber: 159.90,
-  images: [
-    "URL-DA-IMAGEM-1",
-    "URL-DA-IMAGEM-2"
-  ],
-  description: "Vestido elegante e confortável.",
-  variations: {
-    "Tamanho": ["P", "M", "G"],
-    "Cor": ["Preto", "Vermelho", "Azul"]
-  }
+variations: {
+  "Tamanho": ["P", "M", "G"],
+  "Cor": ["Preto", "Vermelho", "Azul"]
 }
 ```
 
-O cliente verá cada grupo de opções na tela do produto e deverá escolher uma opção de cada grupo antes de adicionar à sacola.
-
-## Preço diferente por variação
-
-O preço base fica em `priceNumber`. Se algumas combinações tiverem outro preço, use `variantPrices`.
+## 5. Preço diferente por variação
 
 ```js
-{
-  id: 8,
-  title: "Tênis LUMINA",
-  category: "Calçados",
-  priceNumber: 299.90,
-  images: ["URL-DA-IMAGEM"],
-  description: "Tênis casual.",
-  variations: {
-    "Tamanho": ["38", "39", "40", "41"],
-    "Cor": ["Preto", "Branco"]
-  },
-  variantPrices: {
-    "Cor=Branco|Tamanho=40": 319.90,
-    "Cor=Preto|Tamanho=41": 329.90
-  }
+variantPrices: {
+  "Cor=Branco|Tamanho=40": 319.90
 }
 ```
 
-A chave deve seguir o formato `Nome=Valor`, separando os grupos com `|`. A aplicação organiza os nomes automaticamente, então a ordem dos grupos no objeto não importa.
+A aplicação organiza os nomes automaticamente.
 
-## O que vai para a sacola
+## 6. Atualizações sem cadastro
 
-A sacola registra a combinação escolhida. Por exemplo:
+A LUMINA agora identifica uma nova versão pelo valor:
 
-`Tamanho: M • Cor: Preto`
+```js
+const LUMINA_SITE_VERSION = "5.0.0";
+```
 
-Assim, o mesmo produto pode aparecer mais de uma vez na sacola quando o cliente escolher variações diferentes. Se a mesma combinação for adicionada novamente, a quantidade daquele item aumenta.
+Sempre que publicar uma atualização importante, aumente esse número, por exemplo:
 
-A estrutura também mantém compatibilidade com produtos antigos que usavam somente `size`.
+```js
+const LUMINA_SITE_VERSION = "5.0.1";
+```
 
-## Sincronização entre abas
+Na próxima entrada do cliente, aparece um aviso animado de novidade.
 
-A LUMINA mantém sacola, favoritos e usuário no `localStorage` e usa `BroadcastChannel` quando disponível. Quando uma ação é feita em uma aba, as outras abas abertas no mesmo navegador recebem a alteração e atualizam a interface.
+Se o cliente já tiver autorizado notificações no navegador/celular, a LUMINA também pode mostrar a novidade como uma notificação do dispositivo.
 
-## Regra para futuras alterações
+**Importante:** sem um servidor de push, a notificação do celular depende do cliente ter aberto/visitado a LUMINA e concedido permissão. Para avisos mesmo com o site totalmente fechado, será necessário adicionar um serviço de Push/servidor.
 
-Para adicionar ou editar produtos e variações, prefira mexer somente em `js/products.js`.
-Para mudar aparência, use `css/style.css`.
-Para mudar comportamento, use `js/app.js`.
-Evite colocar novas regras diretamente no `index.html`.
+## 7. Redes sociais
+
+Os links das redes sociais ficam centralizados em `js/config.js`.
+
+Edite somente os três endereços: `instagram`, `tiktok` e `pinterest`.
+Exemplo:
+
+```js
+const LUMINA_SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/sua-loja/",
+  tiktok: "https://www.tiktok.com/@sua-loja",
+  pinterest: "https://www.pinterest.com/sua-loja/"
+};
+```
+
+O mesmo endereço é usado nos links do **Perfil** e do **rodapé**. Ao clicar, a rede social é aberta em uma nova aba/janela.
+
+## 8. Cadastro/login
+
+O cadastro deixou de ser obrigatório. O cliente pode navegar, favoritar e comprar sem criar usuário.
+
+A sacola e os favoritos continuam sendo salvos localmente no dispositivo.
+
+## 9. Navegação inferior
+
+A barra `Sacola / Categorias / Perfil / Favoritos / Instalar` aparece em telas pequenas e também no PC, mantendo as mesmas ações e o mesmo estilo. O rodapé continua abaixo do conteúdo.
+
+## Estrutura
+
+- `index.html` — estrutura das telas.
+- `css/style.css` — aparência.
+- `js/config.js` — links das redes sociais.
+- `js/products.js` — catálogo.
+- `js/state.js` — sacola/favoritos.
+- `js/app.js` — comportamento e notificações.
+- `manifest.json` — PWA.
+- `sw.js` — cache.

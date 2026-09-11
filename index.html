@@ -300,9 +300,9 @@
           <button class="profile-link" onclick="openInfo('Trabalhe Conosco','Para oportunidades de trabalho ou parceria, entre em contato diretamente com a LUMINA pelos canais oficiais disponibilizados pela loja.')">Trabalhe Conosco</button>
         </div>
         <div class="profile-section"><h4>Redes Sociais</h4>
-          <button class="profile-link" onclick="openInfo('Instagram','O endereço oficial do Instagram da LUMINA deve ser configurado pelo administrador da loja antes de publicar o link.')">Instagram</button>
-          <button class="profile-link" onclick="openInfo('TikTok','O endereço oficial do TikTok da LUMINA deve ser configurado pelo administrador da loja antes de publicar o link.')">TikTok</button>
-          <button class="profile-link" onclick="openInfo('Pinterest','O endereço oficial do Pinterest da LUMINA deve ser configurado pelo administrador da loja antes de publicar o link.')">Pinterest</button>
+          <a class="profile-link social-link" id="profileInstagramLink" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a class="profile-link social-link" id="profileTikTokLink" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a>
+          <a class="profile-link social-link" id="profilePinterestLink" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Pinterest</a>
         </div>
         <div class="profile-developer">
           Desenvolvido para a LUMINA<br>
@@ -988,9 +988,9 @@
         <h4>Redes Sociais</h4>
 
         <ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">TikTok</a></li>
-          <li><a href="#">Pinterest</a></li>
+          <li><a id="footerInstagramLink" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          <li><a id="footerTikTokLink" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+          <li><a id="footerPinterestLink" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Pinterest</a></li>
         </ul>
 
       </div>
@@ -1006,6 +1006,7 @@
   <!-- ==================================================
        JAVASCRIPT
   ================================================== -->
+  <script src="js/config.js"></script>
   <script src="js/products.js"></script>
   <script src="js/state.js"></script>
   <script src="js/app.js"></script>

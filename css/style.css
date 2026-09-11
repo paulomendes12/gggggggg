@@ -1448,18 +1448,22 @@
       white-space: pre-line;
     }
 
-    .profile-links button.profile-link {
+    .profile-links .profile-link {
       width: 100%;
       display: block;
       color: inherit;
       text-decoration: none;
       padding: 5px 0;
       font-size: .9rem;
+      line-height: normal;
       text-align: left;
       border: 0;
       background: transparent;
       cursor: pointer;
       font: inherit;
+    }
+    .profile-links .profile-link:hover {
+      text-decoration: none;
     }
     .profile-developer {
       margin-top: 4px;
@@ -1471,16 +1475,8 @@
       line-height: 1.5;
     }
 
-    @media (min-width: 700px) {
-      /* A navegação inferior é exclusiva do celular/tablet. */
-      .app-bottom-nav {
-        display: none;
-      }
-      body {
-        padding-bottom: 0;
-      }
-    }
-
+    /* A navegação inferior permanece disponível em qualquer tamanho de tela,
+       mantendo exatamente os mesmos botões e ações da versão móvel. */
     @media (max-width: 699px) {
       .app-bottom-nav { height: 68px; }
     }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testando veremos | Roupas & Acessórios</title>
+  <title>LUMINA | Roupas & Acessórios</title>
   <meta name="theme-color" content="#1a1a1a" />
   <link rel="manifest" href="manifest.json" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <div id="appLoadingScreen" aria-label="Carregando vai vai vai">
+  <div id="appLoadingScreen" aria-label="Carregando LUMINA">
     <div class="loading-inner">
       <div class="loading-logo">LUMINA</div>
       <div class="loading-spinner"></div>
@@ -281,12 +281,12 @@
   <!-- ==================================================
        PERFIL / USUÁRIO
   ================================================== -->
-  <div class="modal-overlay" id="profileModal">
+  <div class="modal-overlay" id="profileModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
     <div class="modal-content" style="display:block; max-width:500px; padding:28px;">
       <button class="close-btn-svg" onclick="closeProfile()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       <div style="text-align:center;">
-        <div class="profile-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.7-3.2 3.1-5 6.5-5s5.8 1.8 6.5 5"></path></svg></div>
-        <h2 style="font-size:1.35rem; margin-bottom:5px;">Meu perfil</h2>
+        <div class="profile-avatar" aria-label="Identidade visual LUMINA"><img src="icon-512.png" alt="LUMINA"></div>
+        <h2 id="profileModalTitle" style="font-size:1.35rem; margin-bottom:5px;">Meu perfil</h2>
         <p id="profileUserName" style="font-size:.95rem; color:#666; margin-bottom:24px;">Olá!</p>
         <div class="lumina-update-notice" style="margin:0 auto 20px;">✨ O aplicativo/site é atualizado toda sexta-feira ou sábado com novidades.</div>
       </div>
@@ -337,7 +337,7 @@
     <div class="modal-content" style="display:block; max-width:460px; padding:28px;">
       <div style="text-align:center;">
         <div style="font-size:2.2rem; margin-bottom:10px;">✨</div>
-        <h2 style="font-size:1.45rem; margin-bottom:8px;">Bem-vindo à aaaaaa!</h2>
+        <h2 style="font-size:1.45rem; margin-bottom:8px;">Bem-vindo à LUMINA!</h2>
         <p style="font-size:.92rem; color:#666; line-height:1.5; margin-bottom:22px;">
           Para deixar sua experiência mais personalizada, crie seu usuário.
         </p>
@@ -357,9 +357,9 @@
   <div class="update-notification" id="updateNotification" role="status" aria-live="polite">
     <div class="update-notification-icon">✨</div>
     <div class="update-notification-body">
-      <strong>Novidade na vai vai vai!</strong>
-      <span id="updateNotificationVersion">Uma nova atualização está disponível. Mentira não tem nada e so teste.</span>
-      <small id="updateNotificationStatus">Confira "aaaaaa" as melhorias da loja.</small>
+      <strong>Novidade na LUMINA!</strong>
+      <span id="updateNotificationVersion">Uma nova atualização está disponível.</span>
+      <small id="updateNotificationStatus">Confira as melhorias da loja.</small>
     </div>
     <button class="update-notification-close" onclick="closeUpdateNotification()" aria-label="Fechar">×</button>
     <button class="update-notification-action" id="enableUpdateNotificationsBtn" onclick="enableUpdateNotifications()">

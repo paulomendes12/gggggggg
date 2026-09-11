@@ -1526,20 +1526,47 @@
     const profileModal = document.getElementById("profileModal");
 
     function openProfile() {
-      showInteractionLoading("Abrindo seu perfil...");
-      const saved = localStorage.getItem("luminaUser");
+      // O perfil precisa permanecer acessível mesmo quando outro estado de
+      // interface/loading estiver ativo. Todas as informações e ações do
+      // perfil continuam sendo as mesmas.
+      const modal = document.getElementById("profileModal");
+      if (!modal) return;
+
+      const saved = localStorage.getItem(LUMINA_STORAGE.user);
       const profileName = document.getElementById("profileUserName");
-      if (saved) {
-        try { profileName.textContent = `Olá, ${JSON.parse(saved).name}!`; }
-        catch (e) { profileName.textContent = "Olá!"; }
-      } else { profileName.textContent = "Olá! Você não precisa criar uma conta. Sua sacola e seus favoritos ficam salvos neste dispositivo."; }
-      profileModal.classList.add("active");
+
+      if (profileName) {
+        if (saved) {
+          try {
+            const user = JSON.parse(saved);
+            profileName.textContent = user && user.name
+              ? `Olá, ${user.name}!`
+              : "Olá!";
+          } catch (e) {
+            profileName.textContent = "Olá!";
+          }
+        } else {
+          profileName.textContent = "Olá! Você não precisa criar uma conta. Sua sacola e seus favoritos ficam salvos neste dispositivo.";
+        }
+      }
+
+      // Fecha apenas a camada de loading transitória antes de exibir o perfil.
+      const loading = document.getElementById("interactionLoading");
+      if (loading) loading.classList.remove("active");
+
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
     }
 
     function closeProfile() {
+      if (!profileModal) return;
       profileModal.classList.remove("active");
-      if (!welcomeModal.classList.contains("active") && !installModal.classList.contains("active")) document.body.style.overflow = "auto";
+      profileModal.setAttribute("aria-hidden", "true");
+      if (!welcomeModal.classList.contains("active") && !installModal.classList.contains("active") &&
+          !document.getElementById("infoModal")?.classList.contains("active")) {
+        document.body.style.overflow = "auto";
+      }
     }
 
     profileModal.addEventListener("click", e => { if (e.target === profileModal) closeProfile(); });

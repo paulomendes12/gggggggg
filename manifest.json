@@ -3,9 +3,9 @@
   "short_name": "LUMINA",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f4f4f4",
-  "theme_color": "#1a1a1a",
-  "description": "LUMINA - Roupas & Acessórios | V5.0.3",
+  "background_color": "#f7f3f1",
+  "theme_color": "#241f20",
+  "description": "LUMINA - Roupas & Acessórios | Nova identidade visual 2026",
   "icons": [
     {
       "src": "icon-192.png",

@@ -5,16 +5,16 @@
   "display": "standalone",
   "background_color": "#f7f3f1",
   "theme_color": "#241f20",
-  "description": "LUMINA - Roupas & Acessórios | Nova identidade visual 2026",
+  "description": "LUMINA - Roupas & Acessórios | Nova identidade visual 6.0.5",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon-192-v6-0-5.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512-v6-0-5.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

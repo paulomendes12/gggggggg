@@ -150,6 +150,7 @@
       renderCategoriesList();
 
       categoriesFullscreen.classList.add("active");
+      luminaOpenOverlay("categoriesFullscreen");
 
       document.body.style.overflow = "hidden";
 
@@ -157,7 +158,7 @@
 
     function closeCategories() {
 
-      categoriesFullscreen.classList.remove("active");
+      luminaCloseOverlay("categoriesFullscreen");
 
       document.body.style.overflow = "auto";
 
@@ -427,6 +428,7 @@
 
       showInteractionLoading("Abrindo seus favoritos...");
       favFullscreen.classList.add("active");
+      luminaOpenOverlay("favFullscreen");
 
       document.body.style.overflow =
         "hidden";
@@ -437,7 +439,7 @@
 
     function closeFavorites() {
 
-      favFullscreen.classList.remove("active");
+      luminaCloseOverlay("favFullscreen");
 
       document.body.style.overflow =
         "auto";
@@ -581,6 +583,7 @@
 
       renderVariationOptions();
       modal.classList.add("active");
+      luminaOpenOverlay("productModal");
       document.body.style.overflow = "hidden";
     }
 
@@ -671,7 +674,7 @@
 
     function closeModal() {
 
-      modal.classList.remove("active");
+      luminaCloseOverlay("productModal");
 
       // Se o produto foi aberto a partir de Favoritos/Sacola, mantém o
       // overlay de origem aberto em vez de liberar o scroll do fundo.
@@ -765,6 +768,7 @@
       cartFullscreen.classList.add(
         "active"
       );
+      luminaOpenOverlay("cartFullscreen");
 
       document.body.style.overflow =
         "hidden";
@@ -775,9 +779,7 @@
 
     function closeCart() {
 
-      cartFullscreen.classList.remove(
-        "active"
-      );
+      luminaCloseOverlay("cartFullscreen");
 
       document.body.style.overflow =
         "auto";
@@ -1027,6 +1029,7 @@
         checkoutStep1.classList.add(
           "active"
         );
+        luminaOpenOverlay("checkoutStep1");
 
       }, 900);
 
@@ -1034,9 +1037,7 @@
 
     function closeCheckoutStep1() {
 
-      checkoutStep1.classList.remove(
-        "active"
-      );
+      luminaCloseOverlay("checkoutStep1");
 
       updateProgressStep(1);
 
@@ -1044,9 +1045,7 @@
 
     function closeCheckoutStep2() {
 
-      checkoutStep2.classList.remove(
-        "active"
-      );
+      luminaCloseOverlay("checkoutStep2");
 
       updateProgressStep(2);
 
@@ -1228,6 +1227,7 @@
         checkoutStep2.classList.add(
           "active"
         );
+        luminaOpenOverlay("checkoutStep2");
 
       }, 900);
 
@@ -1450,6 +1450,7 @@
       // Não fecha o Perfil: a informação abre por cima dele e, ao fechar,
       // o usuário retorna exatamente para a tela de Perfil.
       document.getElementById("infoModal").classList.add("active");
+      luminaOpenOverlay("infoModal");
       document.body.style.overflow = "hidden";
     }
 
@@ -1497,16 +1498,17 @@
 
       // O Perfil permanece aberto por trás desta janela.
       document.getElementById("infoModal").classList.add("active");
+      luminaOpenOverlay("infoModal");
       document.body.style.overflow = "hidden";
     }
 
     function closeInfo() {
-      document.getElementById("infoModal").classList.remove("active");
+      luminaCloseOverlay("infoModal");
       // Se o Perfil ainda estiver aberto, mantém a rolagem bloqueada para
       // que o usuário simplesmente volte a ele.
-      if (!document.getElementById("profileModal").classList.contains("active") &&
-          !document.getElementById("welcomeModal").classList.contains("active") &&
-          !document.getElementById("installModal").classList.contains("active")) {
+      if (!document.getElementById("profileModal")?.classList.contains("active") &&
+          !document.getElementById("welcomeModal")?.classList.contains("active") &&
+          !document.getElementById("installModal")?.classList.contains("active")) {
         document.body.style.overflow = "auto";
       }
     }
@@ -1555,13 +1557,14 @@
       if (loading) loading.classList.remove("active");
 
       modal.classList.add("active");
+      luminaOpenOverlay("profileModal");
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
     }
 
     function closeProfile() {
       if (!profileModal) return;
-      profileModal.classList.remove("active");
+      luminaCloseOverlay("profileModal");
       profileModal.setAttribute("aria-hidden", "true");
       if (!welcomeModal.classList.contains("active") && !installModal.classList.contains("active") &&
           !document.getElementById("infoModal")?.classList.contains("active")) {
@@ -1569,7 +1572,7 @@
       }
     }
 
-    profileModal.addEventListener("click", e => { if (e.target === profileModal) closeProfile(); });
+    if (profileModal) profileModal.addEventListener("click", e => { if (e.target === profileModal) closeProfile(); });
 
     function saveUser() {
       const input = document.getElementById("welcomeUserName");
@@ -1600,7 +1603,7 @@
     }
 
     function closeWelcome() {
-      welcomeModal.classList.remove("active");
+      luminaCloseOverlay("welcomeModal");
       document.body.style.overflow = "auto";
     }
 
@@ -1629,6 +1632,7 @@
       const button = document.getElementById("installAppBtn");
 
       installModal.classList.add("active");
+      luminaOpenOverlay("installModal");
       document.body.style.overflow = "hidden";
 
       if (deferredInstallPrompt) {
@@ -1655,7 +1659,7 @@
     }
 
     function closeInstall() {
-      installModal.classList.remove("active");
+      luminaCloseOverlay("installModal");
       if (!welcomeModal.classList.contains("active")) {
         document.body.style.overflow = "auto";
       }
@@ -1684,7 +1688,7 @@
        NOTIFICAÇÃO DE ATUALIZAÇÃO — SEM LOGIN
     -------------------------------------------------- */
     // Altere SOMENTE este número quando publicar uma nova versão.
-    const LUMINA_SITE_VERSION = "5.0.3";
+    const LUMINA_SITE_VERSION = "6.0.5";
     const LUMINA_UPDATE_KEY = "luminaLastSeenVersion";
     const LUMINA_UPDATE_UNREAD_KEY = "luminaUpdateUnread";
 
@@ -1747,8 +1751,8 @@
           if (registration && registration.showNotification) {
             await registration.showNotification(title, {
               body,
-              icon: "./icon-192.png",
-              badge: "./icon-192.png",
+              icon: "./icon-192-v6-0-5.png",
+              badge: "./icon-192-v6-0-5.png",
               tag: `lumina-update-${LUMINA_SITE_VERSION}`,
               renotify: true,
               data: { url: "./" }
@@ -1756,7 +1760,7 @@
             return;
           }
         }
-        new Notification(title, { body, icon: "./icon-192.png", tag: "lumina-update" });
+        new Notification(title, { body, icon: "./icon-192-v6-0-5.png", tag: "lumina-update" });
       } catch (error) {
         console.warn("LUMINA: não foi possível enviar a notificação do dispositivo.", error);
       }
@@ -1845,17 +1849,42 @@
       const banner = document.getElementById("luminaBanner");
       if (!slides || !dots || !banner) return;
 
+      // Aceita URLs, caminhos locais ou objetos { src, alt }.
+      // O CSS usa object-fit: cover, portanto imagens em tamanhos/proporções
+      // diferentes não exigem nenhuma alteração manual no código.
       const configured = Array.isArray(window.LUMINA_BANNER_IMAGES)
-        ? window.LUMINA_BANNER_IMAGES
-            .map(item => String(item || "").trim())
-            .filter(Boolean)
+        ? window.LUMINA_BANNER_IMAGES.map(item => {
+            if (typeof item === "string") return { src: item.trim(), fallback: "", alt: "Banner LUMINA" };
+            if (item && typeof item === "object") return {
+              src: String(item.src || item.url || "").trim(),
+              fallback: String(item.fallback || "").trim(),
+              alt: String(item.alt || "Banner LUMINA").trim()
+            };
+            return { src: "", fallback: "", alt: "Banner LUMINA" };
+          }).filter(item => item.src)
         : [];
 
-      if (!configured.length) return;
+      if (!configured.length) {
+        banner.classList.add("lumina-banner-empty");
+        return;
+      }
 
-      slides.innerHTML = configured.map((url, index) => `
-        <div class="lumina-banner-slide ${index === 0 ? "active" : ""}" style="background-image:url("${url.replace(/"/g, '%22')}")" aria-hidden="${index === 0 ? "false" : "true"}"></div>
+      banner.classList.remove("lumina-banner-empty");
+      slides.innerHTML = configured.map((item, index) => `
+        <div class="lumina-banner-slide ${index === 0 ? "active" : ""}" aria-hidden="${index === 0 ? "false" : "true"}">
+          <img src="${item.src.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" alt="${item.alt.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" ${item.fallback ? `data-fallback="${item.fallback.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"` : ''} ${index === 0 ? '' : 'loading="lazy"'} decoding="async">
+        </div>
       `).join("");
+
+      slides.querySelectorAll("img[data-fallback]").forEach(img => {
+        img.addEventListener("error", () => {
+          const fallback = img.dataset.fallback;
+          if (fallback && img.src !== fallback) {
+            img.src = fallback;
+            img.removeAttribute("data-fallback");
+          }
+        }, { once: true });
+      });
 
       dots.innerHTML = configured.map((_, index) => `
         <button type="button" class="lumina-banner-dot ${index === 0 ? "active" : ""}" aria-label="Mostrar imagem ${index + 1}" onclick="setLuminaBannerSlide(${index})"></button>
@@ -1902,14 +1931,88 @@
     }
 
     /* --------------------------------------------------
+       NAVEGAÇÃO DO BOTÃO VOLTAR (ANDROID / NAVEGADOR)
+       Um toque em Voltar fecha somente a tela/modal atual.
+       O histórico é usado como uma pilha de telas da aplicação.
+    -------------------------------------------------- */
+    const LUMINA_OVERLAY_IDS = [
+      "categoriesFullscreen", "favFullscreen", "cartFullscreen", "productModal",
+      "checkoutStep1", "checkoutStep2", "profileModal", "infoModal", "welcomeModal", "installModal"
+    ];
+
+    function luminaHideAllOverlays() {
+      LUMINA_OVERLAY_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove("active");
+          if (id === "profileModal") el.setAttribute("aria-hidden", "true");
+        }
+      });
+      resetZoom();
+      document.body.style.overflow = "auto";
+    }
+
+    function luminaApplyHistoryState(state) {
+      luminaHideAllOverlays();
+      const id = state && state.luminaOverlay;
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add("active");
+      if (id === "profileModal") el.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function luminaOpenOverlay(id) {
+      const current = history.state;
+      if (current && current.luminaOverlay === id) {
+        luminaApplyHistoryState(current);
+        return;
+      }
+      history.pushState({ ...(current || {}), luminaOverlay: id }, "", location.href);
+      luminaApplyHistoryState(history.state);
+    }
+
+    function luminaCloseOverlay(id) {
+      const current = history.state;
+      if (current && current.luminaOverlay === id) {
+        history.back();
+      } else {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove("active");
+      }
+    }
+
+    if (!history.state || !history.state.luminaBase) {
+      history.replaceState({ luminaBase: true }, "", location.href);
+    }
+
+    window.addEventListener("popstate", event => {
+      luminaApplyHistoryState(event.state || { luminaBase: true });
+    });
+
+    /* --------------------------------------------------
        SERVICE WORKER
     -------------------------------------------------- */
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(error => {
+      window.addEventListener("load", async () => {
+        const hadController = !!navigator.serviceWorker.controller;
+        try {
+          const registration = await navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" });
+          // Força uma checagem da versão publicada, inclusive no PWA já instalado.
+          if (registration && typeof registration.update === "function") {
+            registration.update().catch(() => {});
+          }
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (hadController) {
+              // O novo Service Worker assumiu o controle: mostra o aviso dentro do app.
+              setTimeout(showUpdateNotification, 250);
+            }
+          });
+        } catch (error) {
           console.warn("Service Worker não registrado:", error);
-        });
+        }
       });
     }
 
@@ -1957,6 +2060,6 @@
     showWelcomeIfNeeded();
     prepareNotificationPermissionUI();
     restoreUpdateBell();
-    setTimeout(showUpdateNotification, 700);
+    setTimeout(showUpdateNotification, 350);
 
   

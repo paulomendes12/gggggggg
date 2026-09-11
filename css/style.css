@@ -1956,3 +1956,22 @@ header{
 @media(min-width:1200px){
   .products-grid{grid-template-columns:repeat(4,1fr)}
 }
+
+
+/* =========================================================
+   LUMINA 6.0.5 — BANNER RESPONSIVO + NAVEGAÇÃO
+   ========================================================= */
+.lumina-banner-slides{overflow:hidden}
+.lumina-banner-slide{background:none !important;display:flex;align-items:center;justify-content:center}
+.lumina-banner-slide img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;transition:transform 5s ease;transform:scale(1.02)}
+.lumina-banner-slide.active img{transform:scale(1)}
+.lumina-banner{min-height:280px;isolation:isolate}
+#profileModal{z-index:500 !important;pointer-events:none}
+#profileModal.active{pointer-events:auto}
+#profileModal .modal-content{position:relative;z-index:1}
+#infoModal{z-index:510 !important}
+#interactionLoading{z-index:950 !important}
+@media (max-width:699px){
+  .lumina-banner{min-height:230px}
+  .lumina-banner-slide img{object-fit:cover}
+}

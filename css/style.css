@@ -95,6 +95,53 @@
       stroke-linejoin: round;
     }
 
+    /* Ícone de notificações: discreto e integrado ao cabeçalho existente. */
+    .update-bell-btn {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 1px;
+      right: 0;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 3px;
+      box-sizing: border-box;
+      border-radius: 9px;
+      background: var(--price-color);
+      color: #fff;
+      font-size: .62rem;
+      font-weight: 700;
+      line-height: 16px;
+      text-align: center;
+      display: none;
+      pointer-events: none;
+    }
+
+    .update-bell-btn.has-unread .notification-badge {
+      display: block;
+      animation: luminaNotificationBadge .45s ease both;
+    }
+
+    .update-bell-btn.has-unread svg {
+      animation: luminaBellShake .55s ease both;
+    }
+
+    @keyframes luminaNotificationBadge {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes luminaBellShake {
+      0%, 100% { transform: rotate(0); }
+      25% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+      75% { transform: rotate(-5deg); }
+    }
+
     .badge {
       position: absolute;
       top: 0;
@@ -377,6 +424,36 @@
       color: var(--price-color);
     }
 
+    .product-card-unavailable {
+      opacity: .82;
+    }
+
+    .product-card-unavailable .product-image-wrap img {
+      filter: grayscale(.15);
+    }
+
+    .product-status-unavailable {
+      color: #555 !important;
+      font-size: .98rem !important;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .add-to-cart:disabled,
+    .add-to-cart.is-unavailable {
+      background: #777;
+      color: #fff;
+      cursor: not-allowed;
+      opacity: .9;
+      transform: none !important;
+    }
+
+    .add-to-cart:disabled:hover,
+    .add-to-cart.is-unavailable:hover {
+      opacity: .9;
+      transform: none;
+    }
+
     /* --------------------------------------------------
        NOVOS RECURSOS: USUÁRIO E INSTALAÇÃO
     -------------------------------------------------- */
@@ -430,7 +507,7 @@
       opacity: 0;
       visibility: hidden;
       transition: var(--transition);
-      z-index: 100;
+      z-index: 250;
     }
 
     .modal-overlay.active {
@@ -1030,6 +1107,105 @@
     }
 
     /* --------------------------------------------------
+       NOTIFICAÇÃO DE ATUALIZAÇÃO
+    -------------------------------------------------- */
+    .update-notification {
+      position: fixed;
+      top: 88px;
+      right: 20px;
+      z-index: 500;
+      width: min(420px, calc(100vw - 30px));
+      padding: 16px 46px 16px 16px;
+      border: 1px solid #e7e7e7;
+      border-radius: 16px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 16px 45px rgba(0,0,0,.18);
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      transform: translateY(-20px) scale(.96);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: all .35s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .update-notification.active {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .update-notification-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .update-notification-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-right: 4px;
+    }
+
+    .update-notification-body strong {
+      font-size: .95rem;
+      color: #111;
+    }
+
+    .update-notification-body span {
+      font-size: .82rem;
+      color: #444;
+    }
+
+    .update-notification-body small {
+      font-size: .74rem;
+      color: #777;
+      line-height: 1.35;
+    }
+
+    .update-notification-close {
+      position: absolute;
+      top: 9px;
+      right: 10px;
+      border: 0;
+      background: transparent;
+      color: #777;
+      font-size: 1.45rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .update-notification-action {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 3px;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: #111;
+      color: #fff;
+      font-size: .76rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 699px) {
+      .update-notification {
+        top: 76px;
+        right: 10px;
+        width: calc(100vw - 20px);
+      }
+    }
+
+    /* --------------------------------------------------
        8. RODAPÉ
     -------------------------------------------------- */
     footer {
@@ -1296,19 +1472,13 @@
     }
 
     @media (min-width: 700px) {
+      /* A navegação inferior é exclusiva do celular/tablet. */
       .app-bottom-nav {
-        height: 72px;
-        max-width: 760px;
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        width: min(92%, 760px);
-        bottom: 16px;
-        border: 1px solid #e6e6e6;
-        border-radius: 20px;
-        padding: 7px 16px;
+        display: none;
       }
-      body { padding-bottom: 110px; }
+      body {
+        padding-bottom: 0;
+      }
     }
 
     @media (max-width: 699px) {

@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#f4f4f4",
   "theme_color": "#1a1a1a",
-  "description": "LUMINA - Roupas & Acessórios",
+  "description": "LUMINA - Roupas & Acessórios | V5",
   "icons": [
     {
       "src": "icon-192.png",
@@ -19,5 +19,8 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./",
+  "scope": "./",
+  "prefer_related_applications": false
 }

@@ -115,6 +115,14 @@
         LUMINA
       </div>
 
+      <button class="header-btn update-bell-btn" id="updateBellBtn" onclick="openUpdateNotificationFromBell()" title="Notificações" aria-label="Notificações">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+          <path d="M10 21h4"></path>
+        </svg>
+        <span class="notification-badge" id="updateBellBadge" aria-hidden="true">1</span>
+      </button>
+
       <div class="header-actions">
 
         <button class="header-btn"
@@ -337,6 +345,22 @@
         <button class="checkout-btn" onclick="saveUser()">Continuar</button>
       </div>
     </div>
+  </div>
+
+  <!-- ==================================================
+       AVISO DE ATUALIZAÇÃO — NÃO EXIGE LOGIN
+  ================================================== -->
+  <div class="update-notification" id="updateNotification" role="status" aria-live="polite">
+    <div class="update-notification-icon">✨</div>
+    <div class="update-notification-body">
+      <strong>Novidade na LUMINA!</strong>
+      <span id="updateNotificationVersion">Uma nova atualização está disponível.</span>
+      <small id="updateNotificationStatus">Confira as melhorias da loja.</small>
+    </div>
+    <button class="update-notification-close" onclick="closeUpdateNotification()" aria-label="Fechar">×</button>
+    <button class="update-notification-action" id="enableUpdateNotificationsBtn" onclick="enableUpdateNotifications()">
+      Ativar notificações
+    </button>
   </div>
 
   <!-- ==================================================

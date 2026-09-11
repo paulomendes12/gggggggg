@@ -232,6 +232,27 @@
        CARDS
     -------------------------------------------------- */
 
+    /* --------------------------------------------------
+       STATUS DO PRODUTO
+    -------------------------------------------------- */
+    function getProductStatus(product) {
+      const status = String(product?.status || "disponivel").toLowerCase().trim();
+      return ["disponivel", "sem-estoque", "vendido"].includes(status)
+        ? status
+        : "disponivel";
+    }
+
+    function getProductStatusLabel(product) {
+      const status = getProductStatus(product);
+      if (status === "vendido") return "Vendido";
+      if (status === "sem-estoque") return "Sem estoque";
+      return "";
+    }
+
+    function isProductAvailable(product) {
+      return getProductStatus(product) === "disponivel";
+    }
+
     function createCardHTML(p) {
 
       const isFav =
@@ -240,7 +261,7 @@
       return `
 
         <div
-          class="product-card"
+          class="product-card ${isProductAvailable(p) ? "" : "product-card-unavailable"}"
           onclick="openModal(${p.id})">
 
           <button
@@ -268,8 +289,8 @@
               ${p.title}
             </h3>
 
-            <div class="product-price">
-              ${formatCurrency(p.priceNumber)}
+            <div class="product-price ${isProductAvailable(p) ? "" : "product-status-unavailable"}">
+              ${isProductAvailable(p) ? formatCurrency(p.priceNumber) : getProductStatusLabel(p)}
             </div>
 
           </div>
@@ -538,7 +559,20 @@
       document.getElementById("modalTitle").textContent = activeProduct.title;
       document.getElementById("modalDesc").textContent = activeProduct.description;
       document.getElementById("modalImgMain").src = activeProduct.images[0];
-      document.getElementById("modalPrice").textContent = formatCurrency(getProductPrice(activeProduct));
+      const modalPrice = document.getElementById("modalPrice");
+      const addButton = document.querySelector("#productModal .add-to-cart");
+      const available = isProductAvailable(activeProduct);
+      if (modalPrice) {
+        modalPrice.textContent = available
+          ? formatCurrency(getProductPrice(activeProduct))
+          : getProductStatusLabel(activeProduct);
+        modalPrice.classList.toggle("product-status-unavailable", !available);
+      }
+      if (addButton) {
+        addButton.disabled = !available;
+        addButton.textContent = available ? "Adicionar à Sacola" : getProductStatusLabel(activeProduct);
+        addButton.classList.toggle("is-unavailable", !available);
+      }
 
       document.getElementById("thumbnailsRow").innerHTML = activeProduct.images.map((imgUrl, index) => `
         <img src="${imgUrl}" class="thumb-img ${index === 0 ? "active" : ""}"
@@ -562,7 +596,12 @@
         btn.classList.toggle("selected", btn.dataset.variationValue === value);
       });
 
-      document.getElementById("modalPrice").textContent = formatCurrency(getProductPrice(activeProduct));
+      const priceEl = document.getElementById("modalPrice");
+      if (priceEl) {
+        priceEl.textContent = isProductAvailable(activeProduct)
+          ? formatCurrency(getProductPrice(activeProduct))
+          : getProductStatusLabel(activeProduct);
+      }
     });
 
     function changeMainImage(
@@ -634,8 +673,16 @@
 
       modal.classList.remove("active");
 
-      document.body.style.overflow =
-        "auto";
+      // Se o produto foi aberto a partir de Favoritos/Sacola, mantém o
+      // overlay de origem aberto em vez de liberar o scroll do fundo.
+      if (
+        (favFullscreen && favFullscreen.classList.contains("active")) ||
+        (cartFullscreen && cartFullscreen.classList.contains("active"))
+      ) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
 
       resetZoom();
 
@@ -657,7 +704,7 @@
     -------------------------------------------------- */
 
     function addToCartFromModal() {
-      if (!activeProduct) return;
+      if (!activeProduct || !isProductAvailable(activeProduct)) return;
 
       const variantKey = buildVariantKey(selectedVariations);
       const variantLabel = getSelectedVariantLabel();
@@ -1427,7 +1474,7 @@
       if (saved) {
         try { profileName.textContent = `Olá, ${JSON.parse(saved).name}!`; }
         catch (e) { profileName.textContent = "Olá!"; }
-      } else { profileName.textContent = "Olá! Crie seu usuário para personalizar sua experiência."; }
+      } else { profileName.textContent = "Olá! Você não precisa criar uma conta. Sua sacola e seus favoritos ficam salvos neste dispositivo."; }
       profileModal.classList.add("active");
       document.body.style.overflow = "hidden";
     }
@@ -1473,15 +1520,9 @@
     }
 
     function showWelcomeIfNeeded() {
-      if (localStorage.getItem("luminaUser")) return;
-
-      welcomeModal.classList.add("active");
-      document.body.style.overflow = "hidden";
-
-      setTimeout(() => {
-        const input = document.getElementById("welcomeUserName");
-        if (input) input.focus();
-      }, 250);
+      // V5: cadastro/login não é mais obrigatório.
+      // O cliente pode comprar sem criar usuário.
+      return;
     }
 
     /* --------------------------------------------------
@@ -1555,6 +1596,126 @@
     }
 
     /* --------------------------------------------------
+       NOTIFICAÇÃO DE ATUALIZAÇÃO — SEM LOGIN
+    -------------------------------------------------- */
+    // Altere SOMENTE este número quando publicar uma nova versão.
+    const LUMINA_SITE_VERSION = "5.0.1";
+    const LUMINA_UPDATE_KEY = "luminaLastSeenVersion";
+    const LUMINA_UPDATE_UNREAD_KEY = "luminaUpdateUnread";
+
+    function setUpdateUnread(unread) {
+      const bell = document.getElementById("updateBellBtn");
+      if (bell) bell.classList.toggle("has-unread", !!unread);
+      try {
+        if (unread) localStorage.setItem(LUMINA_UPDATE_UNREAD_KEY, "1");
+        else localStorage.removeItem(LUMINA_UPDATE_UNREAD_KEY);
+      } catch (_) {}
+    }
+
+    function restoreUpdateBell() {
+      let unread = false;
+      try { unread = localStorage.getItem(LUMINA_UPDATE_UNREAD_KEY) === "1"; } catch (_) {}
+      setUpdateUnread(unread);
+    }
+
+    function showUpdateNotification() {
+      const lastSeen = localStorage.getItem(LUMINA_UPDATE_KEY);
+      const toast = document.getElementById("updateNotification");
+      if (!toast) return;
+
+      // A primeira visita também pode receber o aviso; nas visitas seguintes,
+      // somente uma versão nova gera uma nova notificação.
+      if (lastSeen === LUMINA_SITE_VERSION) {
+        restoreUpdateBell();
+        return;
+      }
+
+      const versionText = document.getElementById("updateNotificationVersion");
+      if (versionText) versionText.textContent = `Versão ${LUMINA_SITE_VERSION}`;
+
+      toast.classList.add("active");
+      setUpdateUnread(true);
+      localStorage.setItem(LUMINA_UPDATE_KEY, LUMINA_SITE_VERSION);
+
+      // Só é possível mostrar a notificação do sistema quando o usuário já
+      // concedeu permissão. O botão da própria mensagem solicita a permissão
+      // de forma compatível com os navegadores que exigem ação do usuário.
+      sendDeviceUpdateNotification();
+    }
+
+    function openUpdateNotificationFromBell() {
+      const toast = document.getElementById("updateNotification");
+      if (!toast) return;
+      const versionText = document.getElementById("updateNotificationVersion");
+      if (versionText) versionText.textContent = `Versão ${LUMINA_SITE_VERSION}`;
+      toast.classList.add("active");
+      setUpdateUnread(false);
+    }
+
+    async function sendDeviceUpdateNotification() {
+      try {
+        if (!("Notification" in window) || Notification.permission !== "granted") return;
+        const title = "✨ LUMINA foi atualizada!";
+        const body = `A versão ${LUMINA_SITE_VERSION} já está disponível. Confira as novidades da loja.`;
+        if ("serviceWorker" in navigator) {
+          const registration = await navigator.serviceWorker.ready;
+          if (registration && registration.showNotification) {
+            await registration.showNotification(title, {
+              body,
+              icon: "./icon-192.png",
+              badge: "./icon-192.png",
+              tag: `lumina-update-${LUMINA_SITE_VERSION}`,
+              renotify: true,
+              data: { url: "./" }
+            });
+            return;
+          }
+        }
+        new Notification(title, { body, icon: "./icon-192.png", tag: "lumina-update" });
+      } catch (error) {
+        console.warn("LUMINA: não foi possível enviar a notificação do dispositivo.", error);
+      }
+    }
+
+    async function enableUpdateNotifications() {
+      if (!("Notification" in window)) {
+        const status = document.getElementById("updateNotificationStatus");
+        if (status) status.textContent = "Seu navegador não oferece notificações neste dispositivo.";
+        return;
+      }
+      try {
+        const permission = await Notification.requestPermission();
+        const button = document.getElementById("enableUpdateNotificationsBtn");
+        const status = document.getElementById("updateNotificationStatus");
+
+        if (permission === "granted") {
+          if (status) status.textContent = "Pronto! Você receberá avisos quando a LUMINA tiver novidades.";
+          if (button) button.style.display = "none";
+          await sendDeviceUpdateNotification();
+        } else if (permission === "denied") {
+          if (status) status.textContent = "As notificações foram bloqueadas pelo navegador. Elas podem ser liberadas nas configurações do site.";
+        } else {
+          if (status) status.textContent = "As notificações não foram ativadas.";
+        }
+      } catch (error) {
+        console.warn("LUMINA: permissão de notificação indisponível.", error);
+      }
+    }
+
+    function closeUpdateNotification() {
+      const toast = document.getElementById("updateNotification");
+      if (toast) toast.classList.remove("active");
+    }
+
+    function prepareNotificationPermissionUI() {
+      const button = document.getElementById("enableUpdateNotificationsBtn");
+      if (!button || !("Notification" in window)) return;
+      if (Notification.permission === "granted") {
+        button.style.display = "none";
+      }
+    }
+
+    /* --------------------------------------------------
        SERVICE WORKER
     -------------------------------------------------- */
 
@@ -1607,5 +1768,8 @@
     }, 3200);
 
     showWelcomeIfNeeded();
+    prepareNotificationPermissionUI();
+    restoreUpdateBell();
+    setTimeout(showUpdateNotification, 700);
 
   

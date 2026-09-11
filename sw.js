@@ -1,4 +1,4 @@
-const CACHE_NAME = "lumina-v4-final";
+const CACHE_NAME = "lumina-v5-0-1";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./css/style.css", "./js/products.js", "./js/state.js", "./js/app.js", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {
@@ -11,11 +11,31 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
+    caches.keys().then(keys => {
+      const hadPreviousLuminaVersion = keys.some(key =>
+        key.indexOf("lumina-") === 0 && key !== CACHE_NAME
+      );
+      return Promise.all(
+        keys.filter(key => key.indexOf("lumina-") === 0 && key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      ).then(() => hadPreviousLuminaVersion);
+    }).then(hadPreviousLuminaVersion => {
+      return self.clients.claim().then(() => {
+        // Quando uma versão anterior já estava instalada, o próprio Service Worker
+        // avisa o usuário na área de notificações do dispositivo, desde que ele
+        // já tenha concedido permissão às notificações do site.
+        if (hadPreviousLuminaVersion && self.registration && self.registration.showNotification) {
+          return self.registration.showNotification("✨ LUMINA foi atualizada!", {
+            body: "Uma nova versão da loja está disponível. Confira as novidades.",
+            icon: "./icon-192.png",
+            badge: "./icon-192.png",
+            tag: "lumina-update-sw",
+            renotify: true,
+            data: { url: "./" }
+          }).catch(() => {});
+        }
+      });
+    })
   );
 });
 
@@ -26,13 +46,14 @@ self.addEventListener("fetch", event => {
   );
 });
 
-/* LUMINA_SW_GUARD_V4: cache hygiene only; preserves existing UI/app behavior */
-self.addEventListener("activate", function(event) {
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
   event.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(keys.filter(function(k) {
-        return k.indexOf("lumina-") === 0 && k !== "lumina-v4-final";
-      }).map(function(k) { return caches.delete(k); }));
-    }).then(function() { return self.clients.claim(); })
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        if ("focus" in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow("./");
+    })
   );
 });

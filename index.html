@@ -222,12 +222,15 @@
 
     </div>
 
-    <div class="lumina-banner" aria-label="Destaque LUMINA">
+    <div class="lumina-banner" id="luminaBanner" aria-label="Destaque LUMINA">
+      <div class="lumina-banner-slides" id="luminaBannerSlides" aria-live="polite"></div>
+      <div class="lumina-banner-overlay"></div>
       <div class="lumina-banner-content">
         <small>Novidades LUMINA</small>
         <h2>Seu estilo, do seu jeito.</h2>
         <p>Explore as novidades e encontre peças escolhidas para deixar sua experiência ainda mais especial.</p>
       </div>
+      <div class="lumina-banner-dots" id="luminaBannerDots" aria-label="Imagens do banner"></div>
     </div>
 
     <div class="lumina-update-notice">
@@ -300,9 +303,9 @@
           <button class="profile-link" onclick="openInfo('Trabalhe Conosco','Para oportunidades de trabalho ou parceria, entre em contato diretamente com a LUMINA pelos canais oficiais disponibilizados pela loja.')">Trabalhe Conosco</button>
         </div>
         <div class="profile-section"><h4>Redes Sociais</h4>
-          <a class="profile-link social-link" id="profileInstagramLink" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a class="profile-link social-link" id="profileTikTokLink" href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a>
-          <a class="profile-link social-link" id="profilePinterestLink" href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer">Pinterest</a>
+          <button type="button" class="profile-link social-link" id="profileInstagramLink" onclick="openSocialInfo('Instagram')">Instagram</button>
+          <button type="button" class="profile-link social-link" id="profileTikTokLink" onclick="openSocialInfo('TikTok')">TikTok</button>
+          <button type="button" class="profile-link social-link" id="profilePinterestLink" onclick="openSocialInfo('Pinterest')">Pinterest</button>
         </div>
         <div class="profile-developer">
           Desenvolvido para a LUMINA<br>
@@ -323,6 +326,7 @@
       </button>
       <h2 id="infoTitle">LUMINA</h2>
       <p id="infoText"></p>
+      <a id="infoActionBtn" class="info-action-btn" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">Ir para o Instagram</a>
     </div>
   </div>
 
@@ -953,6 +957,8 @@
 
   <!-- ==================================================
        RODAPÉ
+       Mantido no HTML para compatibilidade; a navegação inferior
+       da interface substitui o rodapé visual em todos os dispositivos.
   ================================================== -->
   <footer>
 

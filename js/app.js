@@ -1440,17 +1440,75 @@
 
     function openInfo(title, text) {
       showInteractionLoading("Carregando informação...");
-      const profile = document.getElementById("profileModal");
-      if (profile.classList.contains("active")) profile.classList.remove("active");
       document.getElementById("infoTitle").textContent = title;
       document.getElementById("infoText").textContent = text;
+      const action = document.getElementById("infoActionBtn");
+      if (action) {
+        action.style.display = "none";
+        action.removeAttribute("href");
+      }
+      // Não fecha o Perfil: a informação abre por cima dele e, ao fechar,
+      // o usuário retorna exatamente para a tela de Perfil.
+      document.getElementById("infoModal").classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function openSocialInfo(network) {
+      const links = window.LUMINA_SOCIAL_LINKS || {};
+      const data = {
+        Instagram: {
+          url: links.instagram,
+          text: "Acompanhe a LUMINA no Instagram para ver novidades, lançamentos, inspirações e conteúdos da loja.",
+          button: "Ir para o Instagram"
+        },
+        TikTok: {
+          url: links.tiktok,
+          text: "Acompanhe a LUMINA no TikTok para ver novidades, vídeos, tendências e conteúdos da loja.",
+          button: "Ir para o TikTok"
+        },
+        Pinterest: {
+          url: links.pinterest,
+          text: "Acompanhe a LUMINA no Pinterest para encontrar inspirações, referências e conteúdos da loja.",
+          button: "Ir para o Pinterest"
+        }
+      }[network];
+
+      if (!data) return;
+
+      showInteractionLoading(`Abrindo ${network}...`);
+      document.getElementById("infoTitle").textContent = network;
+      document.getElementById("infoText").textContent = data.text;
+
+      const action = document.getElementById("infoActionBtn");
+      if (action) {
+        const url = typeof data.url === "string" ? data.url.trim() : "";
+        action.textContent = data.button;
+        if (url) {
+          action.href = url;
+          action.target = "_blank";
+          action.rel = "noopener noreferrer";
+          action.style.display = "flex";
+          action.removeAttribute("aria-disabled");
+        } else {
+          action.removeAttribute("href");
+          action.style.display = "none";
+        }
+      }
+
+      // O Perfil permanece aberto por trás desta janela.
       document.getElementById("infoModal").classList.add("active");
       document.body.style.overflow = "hidden";
     }
 
     function closeInfo() {
       document.getElementById("infoModal").classList.remove("active");
-      document.body.style.overflow = "auto";
+      // Se o Perfil ainda estiver aberto, mantém a rolagem bloqueada para
+      // que o usuário simplesmente volte a ele.
+      if (!document.getElementById("profileModal").classList.contains("active") &&
+          !document.getElementById("welcomeModal").classList.contains("active") &&
+          !document.getElementById("installModal").classList.contains("active")) {
+        document.body.style.overflow = "auto";
+      }
     }
 
     document.getElementById("infoModal").addEventListener("click", e => {
@@ -1599,7 +1657,7 @@
        NOTIFICAÇÃO DE ATUALIZAÇÃO — SEM LOGIN
     -------------------------------------------------- */
     // Altere SOMENTE este número quando publicar uma nova versão.
-    const LUMINA_SITE_VERSION = "5.0.2";
+    const LUMINA_SITE_VERSION = "5.0.3";
     const LUMINA_UPDATE_KEY = "luminaLastSeenVersion";
     const LUMINA_UPDATE_UNREAD_KEY = "luminaUpdateUnread";
 
@@ -1722,32 +1780,99 @@
     function applySocialLinks() {
       const links = window.LUMINA_SOCIAL_LINKS || {};
       const mapping = {
-        instagram: ["profileInstagramLink", "footerInstagramLink"],
-        tiktok: ["profileTikTokLink", "footerTikTokLink"],
-        pinterest: ["profilePinterestLink", "footerPinterestLink"]
+        instagram: "footerInstagramLink",
+        tiktok: "footerTikTokLink",
+        pinterest: "footerPinterestLink"
       };
 
-      Object.entries(mapping).forEach(([network, ids]) => {
+      Object.entries(mapping).forEach(([network, id]) => {
         const url = typeof links[network] === "string" ? links[network].trim() : "";
-        ids.forEach(id => {
-          const element = document.getElementById(id);
-          if (!element) return;
-          if (url) {
-            element.href = url;
-            element.target = "_blank";
-            element.rel = "noopener noreferrer";
-            element.removeAttribute("aria-disabled");
-          } else {
-            element.removeAttribute("href");
-            element.removeAttribute("target");
-            element.removeAttribute("rel");
-            element.setAttribute("aria-disabled", "true");
-          }
-        });
+        const element = document.getElementById(id);
+        if (!element) return;
+        if (url) {
+          element.href = url;
+          element.target = "_blank";
+          element.rel = "noopener noreferrer";
+          element.removeAttribute("aria-disabled");
+        } else {
+          element.removeAttribute("href");
+          element.removeAttribute("target");
+          element.removeAttribute("rel");
+          element.setAttribute("aria-disabled", "true");
+        }
       });
     }
 
     applySocialLinks();
+
+    /* --------------------------------------------------
+       BANNER ROTATIVO
+       As imagens ficam configuráveis em js/config.js.
+    -------------------------------------------------- */
+    let luminaBannerTimer = null;
+    let luminaBannerIndex = 0;
+
+    function initLuminaBanner() {
+      const slides = document.getElementById("luminaBannerSlides");
+      const dots = document.getElementById("luminaBannerDots");
+      const banner = document.getElementById("luminaBanner");
+      if (!slides || !dots || !banner) return;
+
+      const configured = Array.isArray(window.LUMINA_BANNER_IMAGES)
+        ? window.LUMINA_BANNER_IMAGES
+            .map(item => String(item || "").trim())
+            .filter(Boolean)
+        : [];
+
+      if (!configured.length) return;
+
+      slides.innerHTML = configured.map((url, index) => `
+        <div class="lumina-banner-slide ${index === 0 ? "active" : ""}" style="background-image:url("${url.replace(/"/g, '%22')}")" aria-hidden="${index === 0 ? "false" : "true"}"></div>
+      `).join("");
+
+      dots.innerHTML = configured.map((_, index) => `
+        <button type="button" class="lumina-banner-dot ${index === 0 ? "active" : ""}" aria-label="Mostrar imagem ${index + 1}" onclick="setLuminaBannerSlide(${index})"></button>
+      `).join("");
+
+      if (configured.length <= 1) {
+        dots.style.display = "none";
+        return;
+      }
+
+      const restart = () => {
+        clearInterval(luminaBannerTimer);
+        luminaBannerTimer = setInterval(() => {
+          setLuminaBannerSlide((luminaBannerIndex + 1) % configured.length, false);
+        }, 5000);
+      };
+
+      banner.addEventListener("mouseenter", () => clearInterval(luminaBannerTimer));
+      banner.addEventListener("mouseleave", restart);
+      banner.addEventListener("touchstart", () => clearInterval(luminaBannerTimer), { passive: true });
+      banner.addEventListener("touchend", restart, { passive: true });
+      restart();
+    }
+
+    function setLuminaBannerSlide(index, restartTimer = true) {
+      const slides = Array.from(document.querySelectorAll(".lumina-banner-slide"));
+      const dots = Array.from(document.querySelectorAll(".lumina-banner-dot"));
+      if (!slides.length) return;
+
+      luminaBannerIndex = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        const active = i === luminaBannerIndex;
+        slide.classList.toggle("active", active);
+        slide.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === luminaBannerIndex));
+
+      if (restartTimer && slides.length > 1) {
+        clearInterval(luminaBannerTimer);
+        luminaBannerTimer = setInterval(() => {
+          setLuminaBannerSlide((luminaBannerIndex + 1) % slides.length, false);
+        }, 5000);
+      }
+    }
 
     /* --------------------------------------------------
        SERVICE WORKER
@@ -1782,6 +1907,7 @@
     try {
       renderProducts(products);
       refreshSharedUI();
+      initLuminaBanner();
     } catch (error) {
       console.error("LUMINA: erro na inicialização da interface.", error);
       const loader = document.getElementById("appLoadingScreen");

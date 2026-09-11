@@ -246,15 +246,60 @@
       position: relative;
       display: flex;
       align-items: center;
-      background-image: linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.16)), url('https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1400&q=85');
+      background: #222;
+      box-shadow: 0 8px 28px rgba(0,0,0,.10);
+      isolation: isolate;
+    }
+    .lumina-banner-slides, .lumina-banner-slide, .lumina-banner-overlay {
+      position: absolute;
+      inset: 0;
+    }
+    .lumina-banner-slide {
       background-size: cover;
       background-position: center;
-      box-shadow: 0 8px 28px rgba(0,0,0,.10);
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity .7s ease, transform 5s ease;
+      z-index: 0;
     }
-    .lumina-banner-content { padding: 28px; color: #fff; max-width: 560px; }
+    .lumina-banner-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .lumina-banner-overlay {
+      background: linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.16));
+      z-index: 1;
+      pointer-events: none;
+    }
+    .lumina-banner-content { padding: 28px; color: #fff; max-width: 560px; position: relative; z-index: 2; }
     .lumina-banner-content small { display:block; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; margin-bottom:8px; opacity:.88; }
     .lumina-banner-content h2 { margin:0 0 7px; font-size:clamp(1.45rem,4vw,2.25rem); }
     .lumina-banner-content p { margin:0; font-size:.92rem; line-height:1.5; opacity:.94; }
+
+    .lumina-banner-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      z-index: 3;
+    }
+    .lumina-banner-dot {
+      width: 7px;
+      height: 7px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 50%;
+      background: rgba(255,255,255,.45);
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .lumina-banner-dot.active {
+      background: #fff;
+      transform: scale(1.35);
+    }
 
     /* Simulação de processamento para navegação e transições. */
     #interactionLoading {
@@ -468,7 +513,6 @@
     .profile-section h4 { margin:0 0 9px; font-size:.86rem; text-transform:uppercase; letter-spacing:.06em; }
     .profile-section a { display:block; color:inherit; text-decoration:none; padding:5px 0; font-size:.9rem; }
 
-    @media (max-width:699px) { footer { display:none; } }
 
     #welcomeModal .modal-content, #installModal .modal-content {
       transform: scale(0.96);
@@ -1209,6 +1253,7 @@
        8. RODAPÉ
     -------------------------------------------------- */
     footer {
+      display: none;
       background-color: var(--header-bg);
       color: #ffffff;
       padding: 40px 20px 20px;
@@ -1447,10 +1492,27 @@
       font-size: .92rem;
       white-space: pre-line;
     }
+    .info-action-btn {
+      width: 100%;
+      margin-top: 18px;
+      min-height: 44px;
+      padding: 11px 16px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .9rem;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .info-action-btn:hover { opacity: .88; transform: translateY(-1px); }
 
     .profile-links .profile-link {
       width: 100%;
       display: block;
+      box-sizing: border-box;
       color: inherit;
       text-decoration: none;
       padding: 5px 0;

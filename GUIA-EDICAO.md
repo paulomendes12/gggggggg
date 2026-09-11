@@ -95,7 +95,7 @@ A aplicação organiza os nomes automaticamente.
 A LUMINA agora identifica uma nova versão pelo valor:
 
 ```js
-const LUMINA_SITE_VERSION = "5.0.0";
+const LUMINA_SITE_VERSION = "5.0.3";
 ```
 
 Sempre que publicar uma atualização importante, aumente esse número, por exemplo:
@@ -125,23 +125,37 @@ const LUMINA_SOCIAL_LINKS = {
 };
 ```
 
-O mesmo endereço é usado nos links do **Perfil** e do **rodapé**. Ao clicar, a rede social é aberta em uma nova aba/janela.
+No **Perfil**, tocar em uma rede social abre uma tela de informação com um botão **Ir para...**. O botão leva ao endereço configurado.
 
-## 8. Cadastro/login
+## 8. Banner rotativo
+
+As imagens do banner ficam em `js/config.js`, na lista `LUMINA_BANNER_IMAGES`. Você pode colocar quantas imagens quiser:
+
+```js
+const LUMINA_BANNER_IMAGES = [
+  "https://endereco-da-imagem-1.jpg",
+  "https://endereco-da-imagem-2.jpg",
+  "https://endereco-da-imagem-3.jpg"
+];
+```
+
+O banner alterna automaticamente as imagens e também permite trocar manualmente pelos pontos na parte inferior.
+
+## 9. Cadastro/login
 
 O cadastro deixou de ser obrigatório. O cliente pode navegar, favoritar e comprar sem criar usuário.
 
 A sacola e os favoritos continuam sendo salvos localmente no dispositivo.
 
-## 9. Navegação inferior
+## 10. Navegação inferior
 
-A barra `Sacola / Categorias / Perfil / Favoritos / Instalar` aparece em telas pequenas e também no PC, mantendo as mesmas ações e o mesmo estilo. O rodapé continua abaixo do conteúdo.
+A barra `Sacola / Categorias / Perfil / Favoritos / Instalar` aparece em telas pequenas e também no PC, mantendo as mesmas ações e o mesmo estilo. O rodapé institucional não é exibido, para evitar duplicidade com a navegação inferior.
 
 ## Estrutura
 
 - `index.html` — estrutura das telas.
 - `css/style.css` — aparência.
-- `js/config.js` — links das redes sociais.
+- `js/config.js` — links das redes sociais e imagens do banner.
 - `js/products.js` — catálogo.
 - `js/state.js` — sacola/favoritos.
 - `js/app.js` — comportamento e notificações.
